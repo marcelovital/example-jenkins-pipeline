@@ -107,7 +107,7 @@ node {
 
 //	Creating the ImageStream on the prodProjectName depends on the serviceaccounts having the image-puller role.
 //	This can be accomplished with the command:
-//  	oc policy add-role-to-group system:image-puller system:serviceaccounts:$hmlAppName -n $devProjectName
+//  	oc policy add-role-to-group system:image-puller system:serviceaccounts:$hmlProjectName -n $devProjectName
 
 		if(!hasApp){
 			openshift.withCluster() {
