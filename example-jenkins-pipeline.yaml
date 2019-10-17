@@ -1,0 +1,12 @@
+kind: "BuildConfig"
+apiVersion: "build.openshift.io/v1"
+metadata:
+  name: "example-jenkins-pipeline"
+spec:
+  source:
+    git:
+      uri: "https://github.com/marcelovital/example-jenkins-pipeline" 
+      ref: "master"
+  strategy:
+    jenkinsPipelineStrategy: 
+    type: JenkinsPipeline 
