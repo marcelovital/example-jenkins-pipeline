@@ -1,10 +1,17 @@
 templateName = "node-app";
-appDevName= "node-app-vital";
-appHmlName= "node-app-vital";
-appProdName= "node-app-vital";
-projectDevName = "vital-app-safra";
-projectHmlName = "vital-app-safra";
-projectProdHmlName = "vital-app-safra";
+
+genericAppName = "node-app";
+genericProjectName = "vital-app";
+
+devProjectName = "$genericProjectName-dev";
+devAppName= "$genericAppName-dev";
+
+hmlProjectName = "$genericProjectName-hml";
+hmlAppName= "$genericAppName-hml";
+
+prodProjectName = "$genericProjectName-prod";
+prodAppName= "$genericAppName-prod";
+
 builderImage = 'registry.access.redhat.com/rhscl/nodejs-8-rhel7';
 gitUrl = 'https://gitlab.com/openshift-samples/node-example.git';
 
@@ -15,23 +22,23 @@ node {
 		def hasBc = false;
 
 		openshift.withCluster() {
-			openshift.withProject(projectName) {
-				hasBc = openshift.selector("bc", appName).exists();
+			openshift.withProject(devProjectName) {
+				hasBc = openshift.selector("bc", devAppName).exists();
 			}
 		}
 
 		if(hasBc) {
 			echo "Starting Build"
 			openshift.withCluster() {
-				openshift.withProject(projectName) {
-					openshift.selector("bc", appName).startBuild().logs("-f")
+				openshift.withProject(devProjectName) {
+					openshift.selector("bc", devAppName).startBuild().logs("-f")
 				}
    			}
 		} else {
 		   echo "Creating Build Configuration"
 		   openshift.withCluster() {
-			   openshift.withProject(projectName) {
-				   def bc = openshift.newBuild("--name=$appName", "$builderImage~$gitUrl", "-l template=$templateName").narrow("bc")
+			   openshift.withProject(devProjectName) {
+				   def bc = openshift.newBuild("--name=$devAppName", "$builderImage~$gitUrl", "-l template=$templateName", "--image-stream=$genericAppName").narrow("bc")
 				   sleep 5
 				   bc.logs("-f")
 				}
@@ -41,55 +48,59 @@ node {
 
 	stage('Promote to DEV') {
 		openshift.withCluster() {
-			openshift.withProject(projectName) {
-				openshift.tag("$appName:latest", "$appName:dev")
+			openshift.withProject(devProjectName) {
+				openshift.tag("$genericAppName:latest", "$genericAppName:dev")
 			}
 		}
 	}
 
 	stage('Create DEV') {
-		def hasApp = false
+
+		def hasApp = false;
+
 		openshift.withCluster() {
-			openshift.withProject(projectName) {
-				hasApp = openshift.selector('dc', "$appName-dev").exists()
+			openshift.withProject(devProjectName) {
+				hasApp = openshift.selector('dc', "$devAppName").exists()
 			}
 		}
 	
-		if(!hasApp){
+		if(!hasApp) {
 			openshift.withCluster() {
-				openshift.withProject(projectName) {
-					openshift.newApp("$appName:latest", "--name=$appName-dev", "-l template=$templateName").narrow('svc').expose()
+				openshift.withProject(devProjectName) {
+					openshift.newApp("$genericAppName:dev", "--name=$devAppName", "-l template=$templateName").narrow('svc').expose()
 				}
 			}
 		}
 	}
 
-	stage('Approval'){
+	stage('Approval DEV-PROD'){
 		timeout(time:3, unit:'HOURS') {
-			input message:'Approve deployment?'
+			input message:'Approve deployment from DEV to PROD?'
 		}
 	}
 
 	stage('Promote to PROD') {
 		openshift.withCluster() {
-			openshift.withProject(projectName) {
-				openshift.tag("$appName:latest", "$appName:prod")
+			openshift.withProject(devProjectName) {
+				openshift.tag("$genericAppName:latest", "$genericAppName:prod")
 			}
 		}
 	}
 
 	stage('Create PROD') {
+
 		def hasApp = false
+
 		openshift.withCluster() {
-			openshift.withProject(projectName) {
-				hasApp = openshift.selector('dc', "$appName-prod").exists()
+			openshift.withProject(prodProjectName) {
+				hasApp = openshift.selector('dc', "$prodAppName").exists()
 			}
 		}
 
 		if(!hasApp){
 			openshift.withCluster() {
-				openshift.withProject(projectName) {
-					openshift.newApp("$appName:prod", "--name=$appName-prod", "-l template=$templateName").narrow('svc').expose()
+				openshift.withProject(prodProjectName) {
+					openshift.newApp("$devProjectName/$genericAppName:prod", "--name=$prodAppName", "-l template=$templateName").narrow('svc').expose()
 				}
 			}
 		}
