@@ -9,4 +9,4 @@ spec:
       ref: "master"
   strategy:
     jenkinsPipelineStrategy: 
-    type: JenkinsPipeline 
+        type: JenkinsPipeline 
