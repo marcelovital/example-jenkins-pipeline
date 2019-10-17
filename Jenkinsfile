@@ -38,7 +38,7 @@ node {
 		   echo "Creating Build Configuration"
 		   openshift.withCluster() {
 			   openshift.withProject(devProjectName) {
-				   def bc = openshift.newBuild("--name=$devAppName", "$builderImage~$gitUrl", "-l template=$templateName", "--image-stream=$genericAppName").narrow("bc")
+				   def bc = openshift.newBuild("--name=$devAppName", "$builderImage~$gitUrl", "-l template=$templateName", "--to=$genericAppName").narrow("bc")
 				   sleep 5
 				   bc.logs("-f")
 				}
