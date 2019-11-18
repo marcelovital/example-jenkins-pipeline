@@ -28,7 +28,7 @@ node {
     stage('UnSet Variable') {
         openshift.withCluster() {
         	openshift.withProject(projName) {
-		        openshift.set("env", "dc/${appName}v", "NOMEARQUIVO=''")
+		        openshift.set("env", "dc/${appName}", "NOMEARQUIVO=''")
             }
         }
     }
