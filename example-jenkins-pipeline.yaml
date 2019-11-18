@@ -6,7 +6,7 @@ spec:
   source:
     git:
       uri: "https://github.com/marcelovital/example-jenkins-pipeline" 
-      ref: "master"
+      ref: "ccee"
   strategy:
     jenkinsPipelineStrategy: 
         type: JenkinsPipeline 
