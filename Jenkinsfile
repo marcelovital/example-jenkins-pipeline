@@ -15,7 +15,8 @@ node {
         openshift.withCluster() {
         	openshift.withProject(projName) {
 		        def dccontab = openshift.selector("dc", "${appName}")
-                dccontab.scale("--replicas=1")                
+                dccontab.scale("--replicas=1")
+                sleep 10      
             }
         }
     }
