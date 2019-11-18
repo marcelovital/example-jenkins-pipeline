@@ -26,6 +26,11 @@ gitUrl = 'https://gitlab.com/openshift-samples/node-example.git';
 node {
 
 	stage('Build Configuration') {
+		echo param.testvalue
+	}
+
+
+	/* stage('Build Configuration') {
 
 		def hasBc = false;
 
@@ -153,5 +158,5 @@ node {
 				}
 			}
 		}
-	}
+	} */
 }
