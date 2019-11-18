@@ -26,7 +26,8 @@ gitUrl = 'https://gitlab.com/openshift-samples/node-example.git';
 node {
 
 	stage('Build Configuration') {
-		echo var1 + var2
+		echo var1
+		echo var2
 	}
 
 
