@@ -9,7 +9,7 @@ templateName = "node-app";
 
 
 genericAppName = "node-app";
-genericProjectName = "mvitalbr-app";
+genericProjectName = "mvitalbr";
 
 devProjectName = "$genericProjectName-dev";
 devAppName= "$genericAppName-dev";
