@@ -14,7 +14,7 @@ node {
     stage('Set Replicas') { 
         openshift.withCluster() {
         	openshift.withProject(projName) {
-		        def dccontab = openshift.Selector("dc", "${appName}")
+		        def dccontab = openshift.selector("dc", "${appName}")
                 dccontab.scale("3")                
             }
         }
@@ -36,7 +36,7 @@ node {
     stage('UnSet Replicas') { 
         openshift.withCluster() {
         	openshift.withProject(projName) {
-		        def dccontab = openshift.Selector("dc", "${appName}")
+		        def dccontab = openshift.selector("dc", "${appName}")
                 dccontab.scale("--replicas=1")                
             }
         }
